@@ -1,11 +1,12 @@
 from dash import dash, html, dcc, dash_table
+import dash_bootstrap_components as dbc
 import pandas as pd
 import plotly.express as px
 
-df_card = pd.read_csv("data/cards.csv", delimiter=",")
-df_mons = pd.read_csv("data/monsters.csv", delimiter=",")
-df_spells = pd.read_csv("data/spells.csv", delimiter=",")
-df_traps = pd.read_csv("data/traps.csv", delimiter=",")
+df_card = pd.read_csv("data/cards.csv")
+df_mons = pd.read_csv("data/monsters.csv")
+df_spells = pd.read_csv("data/spells.csv")
+df_traps = pd.read_csv("data/traps.csv")
 
 app = dash.Dash()
 
@@ -17,29 +18,35 @@ fig2 = px.pie(df_spell, names='race')
 
 fig3 = px.pie(df_traps, names='race')
 
+row_summary_metrics = dbc.Row(
+    [
+        dbc.Col("", width=1),
+        dbc.Col(dcc.Graph(figure=fig2)),
+        dbc.Col(dcc.Graph(figure=fig3)),
+        dbc.Col("", width=1),
+    ],
+)
+
 app.layout = html.Div([
 
     html.H1(children="IT'S TIME TO DU-DU-DU-DU-DU-DUUUUEL"),
 
     dcc.Dropdown(['Monsters', 'Spells', 'Traps'], 'Monsters', id='dropdown'),
 
-    dcc.Graph(
-        id='yugraph2',
-        figure=fig1
-    ),
+    row_summary_metrics,
 
-    dcc.Graph(
-        id='yugraph2',
-        figure=fig2
-    ),
+    # dcc.Graph(
+    #     id='yugraph2',
+    #     figure=fig2
+    # ),
 
-    dcc.Graph(
-        id='yugraph2',
-        figure=fig3
-    ),
-
+    # dcc.Graph(
+    #     id='yugraph3',
+    #     figure=fig3
+    # ),
 
     html.Div(id='dd-output-container'),
+
     dash_table.DataTable(
         id='datatable-interactivity',
         columns=[
