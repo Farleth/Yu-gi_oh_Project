@@ -3,15 +3,18 @@ import pandas as pd
 from dash.dependencies import Input, Output
 import plotly.express as px
 
-df = pd.read_csv("data/cards.csv", delimiter=",")
+df_card = pd.read_csv("data/cards.csv", delimiter=",")
+df_mons = pd.read_csv("data/monsters.csv", delimiter=",")
 
 app = dash.Dash()
 
-fig = px.histogram(df,x=df['type'])
+fig = px.histogram(df_card,x=df_card['type'])
 
 app.layout = html.Div([
 
     html.H1(children="IT'S TIME TO DU-DU-DU-DU-DU-DUUUUEL"),
+
+
 
     html.Div(children='graph of type'),
 
@@ -20,12 +23,14 @@ app.layout = html.Div([
         figure=fig
     ),
 
+        dcc.Dropdown(['Monsters', 'Spells', 'Traps'], 'Monsters', id='dropdown'),
+    html.Div(id='dd-output-container'),
     dash_table.DataTable(
         id='datatable-interactivity',
         columns=[
-            {"name": i, "id": i, "deletable": True, "selectable": True} for i in df.columns
+            {"name": i, "id": i, "deletable": True, "selectable": True} for i in df_card.columns
         ],
-        data=df.to_dict('records'),
+        data=df_card.to_dict('records'),
         editable=True,
         filter_action="native",
         sort_action="native",
@@ -55,8 +60,13 @@ app.layout = html.Div([
 # callbacks
 
 @app.callback(
+    Output('dd-output-container', 'children'),
+    Input('dropdown', 'value')
+)
+
+@app.callback(
     Output('datatable-interactivity', 'style_data_conditional'),
-    Input('datatable-interactivity', 'selected_columns')
+    Input('datatable-interactivity', 'selected_columns'),
 )
 def update_styles(selected_columns):
     return [{
@@ -81,7 +91,7 @@ def update_graphs(rows, derived_virtual_selected_rows):
     if derived_virtual_selected_rows is None:
         derived_virtual_selected_rows = []
 
-    dff = df if rows is None else pd.DataFrame(rows)
+    dff = df_card if rows is None else pd.DataFrame(rows)
 
     colors = ['#7FDBFF' if i in derived_virtual_selected_rows else '#0074D9'
               for i in range(len(dff))]
