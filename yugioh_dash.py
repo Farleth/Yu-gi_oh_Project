@@ -8,7 +8,7 @@ df_mons = pd.read_csv("data/monsters.csv")
 df_spells = pd.read_csv("data/spells.csv")
 df_traps = pd.read_csv("data/traps.csv")
 
-app = dash.Dash()
+app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 
 fig1 = px.histogram(df_spells, x='race')
 
@@ -20,12 +20,13 @@ fig3 = px.pie(df_traps, names='race')
 
 row_summary_metrics = dbc.Row(
     [
-        dbc.Col("", width=1),
-        dbc.Col(dcc.Graph(figure=fig2)),
-        dbc.Col(dcc.Graph(figure=fig3)),
-        dbc.Col("", width=1),
+        dbc.Col("spell graph",width=1),
+        dbc.Col(html.Div(dcc.Graph(figure=fig2))),
+        dbc.Col("trap graph",width=1),
+        dbc.Col(html.Div(dcc.Graph(figure=fig3))),
     ],
 )
+
 
 app.layout = html.Div([
 
@@ -33,26 +34,16 @@ app.layout = html.Div([
 
     dcc.Dropdown(['Monsters', 'Spells', 'Traps'], 'Monsters', id='dropdown'),
 
+    html.H1("graphs"),
+
     row_summary_metrics,
-
-    # dcc.Graph(
-    #     id='yugraph2',
-    #     figure=fig2
-    # ),
-
-    # dcc.Graph(
-    #     id='yugraph3',
-    #     figure=fig3
-    # ),
-
-    html.Div(id='dd-output-container'),
 
     dash_table.DataTable(
         id='datatable-interactivity',
         columns=[
-            {"name": i, "id": i, "deletable": True, "selectable": True} for i in df_card.columns
+            {"name": i, "id": i, "deletable": True, "selectable": True} for i in df_mons.columns
         ],
-        data=df_card.to_dict('records'),
+        data=df_mons.to_dict('records'),
         editable=True,
         filter_action="native",
         sort_action="native",
