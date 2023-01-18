@@ -20,21 +20,44 @@ fig3 = px.pie(df_traps, names='race')
 
 row_summary_metrics = dbc.Row(
     [
-        dbc.Col("spell graph",width=1),
+        dbc.Col("",width=1),
+        dbc.Col(html.H4("spell graph"),width=1),
         dbc.Col(html.Div(dcc.Graph(figure=fig2))),
-        dbc.Col("trap graph",width=1),
+        dbc.Col(html.H4("trap graph"),width=1),
         dbc.Col(html.Div(dcc.Graph(figure=fig3))),
+        dbc.Col("",width=1),
     ],
 )
 
 
 app.layout = html.Div([
 
-    html.H1(children="IT'S TIME TO DU-DU-DU-DU-DU-DUUUUEL"),
+    html.H1(children="IT'S TIME TO DU-DU-DU-DU-DU-DUUUUEL",
+            style={
+                "color": "black",
+                "text-align": "center",
+                'margin-top': '50px',
+                'margin-bottom': '50px',
+            },
+            ),
 
-    dcc.Dropdown(['Monsters', 'Spells', 'Traps'], 'Monsters', id='dropdown'),
+    dcc.Dropdown(['Monsters', 'Spells', 'Traps'], 'Monsters',
+                 id='dropdown',
+                 style={
+                "color": "black",
+                "text-align": "center",
+                'margin-bottom': '30px',
+                'width': '50%',
+                },
 
-    html.H1("graphs"),
+                ),
+
+    html.H1("graphs",
+            style={
+                "color": "black",
+                'margin-bottom': '50px',
+                }
+            ),
 
     row_summary_metrics,
 
@@ -49,9 +72,14 @@ app.layout = html.Div([
         sort_action="native",
         sort_mode="multi",
         fixed_columns={ 'headers': True, 'data': 1 },
-        style_table={'minWidth': '50%'},
+        style_table={'minWidth': '80%'},
+        style_data={
+        'whiteSpace': 'normal',
+        'height': 'auto',
+        'lineHeight': '15px'
+        },
         style_cell={
-        'minWidth': '100px', 'width': '100px', 'maxWidth': '100px',
+        'minWidth': '100px', 'width': '150px', 'maxWidth': '200px',
         'overflow': 'hidden',
         'textOverflow': 'ellipsis',
         },
@@ -65,9 +93,13 @@ app.layout = html.Div([
         page_size= 10,
     ),
 
-    html.Div(id='datatable-interactivity-container'),
+    html.Div(
+            id='table-paging-with-graph-container',
+            className="five columns"
+        ),
 
     html.A(html.Button('Refresh Data'),href='/')
+
 ])
 
 if __name__ == '__main__':
